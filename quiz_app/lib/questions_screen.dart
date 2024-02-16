@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/data/questions.dart';
 import 'package:quiz_app/answer_button.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class QuestionsScreen extends StatefulWidget {
-  const QuestionsScreen({super.key});
+  const QuestionsScreen({required this.onSelectAnswer, super.key});
+
+  final void Function(String answer) onSelectAnswer;
 
   @override
   State<StatefulWidget> createState() {
@@ -14,12 +17,13 @@ class QuestionsScreen extends StatefulWidget {
 class _QuestionsScreenState extends State<QuestionsScreen> {
   var currentQuestionIndex = 0;
 
-  void answerQuestion() {
+  void answerQuestion(String selectedAnswer) {
+    widget.onSelectAnswer(selectedAnswer);
     setState(
       () {
-        if (currentQuestionIndex < questions.length-1) {
-          currentQuestionIndex++;
-        }
+        // if (currentQuestionIndex < questions.length-1) {
+        currentQuestionIndex++;
+        // }
       },
     );
   }
@@ -37,18 +41,23 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           Text(
             currentQuestion.text,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
+            style: GoogleFonts.lato(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
           ...currentQuestion.getShufledAnswers().map(
             (answer) {
-              return AnswerButton(
-                answerText: answer,
-                onTap: answerQuestion,
+              return Column(
+                children: [
+                  AnswerButton(
+                      answerText: answer,
+                      onTap: () {
+                        answerQuestion(answer);
+                      }),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                ],
               );
             },
           ),
